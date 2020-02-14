@@ -5,6 +5,7 @@ const PropTypes = require("prop-types");
 const ALL_INITIALIZERS = [];
 const READY_INITIALIZERS = [];
 const CONSTRUCTED_INITIALIZERS = [];
+const CONSTRUCTED_RESULTS = [];
 
 function isWebpackReady(getModuleIds) {
   if (typeof __webpack_modules__ !== "object") {
@@ -140,6 +141,7 @@ function createLoadableComponent(loadFn, options) {
       super(props);
       init();
       CONSTRUCTED_INITIALIZERS.push(init);
+      CONSTRUCTED_RESULTS.push(res);
 
       this.state = {
         error: res.error,
@@ -322,5 +324,7 @@ Loadable.waitForLoad = () => {
     flushInitializers(CONSTRUCTED_INITIALIZERS).then(resolve, reject);
   });
 };
+
+Loadable.areAllLoaded = () => CONSTRUCTED_RESULTS.every(res => res.loaded);
 
 module.exports = Loadable;

@@ -4,6 +4,7 @@ const PropTypes = require("prop-types");
 
 const ALL_INITIALIZERS = [];
 const READY_INITIALIZERS = [];
+const CONSTRUCTED_INITIALIZERS = [];
 
 function isWebpackReady(getModuleIds) {
   if (typeof __webpack_modules__ !== "object") {
@@ -138,6 +139,7 @@ function createLoadableComponent(loadFn, options) {
     constructor(props) {
       super(props);
       init();
+      CONSTRUCTED_INITIALIZERS.push(init);
 
       this.state = {
         error: res.error,
@@ -312,6 +314,12 @@ Loadable.preloadReady = () => {
   return new Promise((resolve, reject) => {
     // We always will resolve, errors should be handled within loading UIs.
     flushInitializers(READY_INITIALIZERS).then(resolve, resolve);
+  });
+};
+
+Loadable.waitForLoad = () => {
+  return new Promise((resolve, reject) => {
+    flushInitializers(CONSTRUCTED_INITIALIZERS).then(resolve, reject);
   });
 };
 

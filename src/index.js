@@ -319,12 +319,21 @@ Loadable.preloadReady = () => {
   });
 };
 
+/**
+ * Wait for all loadables to load that've been explicitly initialized.
+ * This is distinct from preloadAll which loads all loadables wether
+ * or not they are ever used.
+ */
 Loadable.waitForLoad = () => {
   return new Promise((resolve, reject) => {
     flushInitializers(CONSTRUCTED_INITIALIZERS).then(resolve, reject);
   });
 };
 
-Loadable.areAllLoaded = () => CONSTRUCTED_RESULTS.every(res => res.loaded);
+/**
+ * Checks to see if all loadables, that have been initialized, have loaded.
+ * To be used in conjunction with waitForLoad.
+ */
+Loadable.areAllLoaded = () => CONSTRUCTED_RESULTS.every(res => !res.loading);
 
 module.exports = Loadable;

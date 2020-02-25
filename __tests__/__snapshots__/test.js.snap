@@ -213,3 +213,15 @@ exports[`server side rendering es6 1`] = `
   fixture2
 </div>
 `;
+
+exports[`server side rendering es6 waitForLoad/areAllLoaded 1`] = `
+<div>
+  fixture2
+</div>
+`;
+
+exports[`server side rendering waitForLoad/areAllLoaded 1`] = `
+<div>
+  fixture1
+</div>
+`;

@@ -34,6 +34,7 @@ function MyComponent(props) {
 afterEach(async () => {
   try {
     await Loadable.preloadAll();
+    await Loadable.waitForLoad();
   } catch (err) {}
 });
 
@@ -113,6 +114,38 @@ test('server side rendering es6', async () => {
 
   let component = renderer.create(<LoadableMyComponent prop="baz" />);
 
+  expect(component.toJSON()).toMatchSnapshot(); // serverside
+});
+
+test('server side rendering waitForLoad/areAllLoaded', async () => {
+  let LoadableMyComponent = Loadable({
+    loader: createLoader(400, () => require('../__fixtures__/component')),
+    loading: MyLoadingComponent,
+  });
+
+  let component = renderer.create(<LoadableMyComponent prop="baz" />);
+
+  expect(Loadable.areAllLoaded()).toEqual(false);
+
+  await Loadable.waitForLoad();
+
+  expect(Loadable.areAllLoaded()).toEqual(true);
+  expect(component.toJSON()).toMatchSnapshot(); // serverside
+});
+
+test('server side rendering es6 waitForLoad/areAllLoaded', async () => {
+  let LoadableMyComponent = Loadable({
+    loader: createLoader(400, () => require('../__fixtures__/component.es6')),
+    loading: MyLoadingComponent,
+  });
+
+  let component = renderer.create(<LoadableMyComponent prop="baz" />);
+
+  expect(Loadable.areAllLoaded()).toEqual(false);
+
+  await Loadable.waitForLoad();
+
+  expect(Loadable.areAllLoaded()).toEqual(true);
   expect(component.toJSON()).toMatchSnapshot(); // serverside
 });
 

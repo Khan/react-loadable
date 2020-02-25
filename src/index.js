@@ -4,6 +4,8 @@ const PropTypes = require("prop-types");
 
 const ALL_INITIALIZERS = [];
 const READY_INITIALIZERS = [];
+const CONSTRUCTED_INITIALIZERS = [];
+const CONSTRUCTED_RESULTS = [];
 
 function isWebpackReady(getModuleIds) {
   if (typeof __webpack_modules__ !== "object") {
@@ -138,6 +140,8 @@ function createLoadableComponent(loadFn, options) {
     constructor(props) {
       super(props);
       init();
+      CONSTRUCTED_INITIALIZERS.push(init);
+      CONSTRUCTED_RESULTS.push(res);
 
       this.state = {
         error: res.error,
@@ -314,5 +318,22 @@ Loadable.preloadReady = () => {
     flushInitializers(READY_INITIALIZERS).then(resolve, resolve);
   });
 };
+
+/**
+ * Wait for all loadables to load that've been explicitly initialized.
+ * This is distinct from preloadAll which loads all loadables wether
+ * or not they are ever used.
+ */
+Loadable.waitForLoad = () => {
+  return new Promise((resolve, reject) => {
+    flushInitializers(CONSTRUCTED_INITIALIZERS).then(resolve, reject);
+  });
+};
+
+/**
+ * Checks to see if all loadables, that have been initialized, have loaded.
+ * To be used in conjunction with waitForLoad.
+ */
+Loadable.areAllLoaded = () => CONSTRUCTED_RESULTS.every(res => !res.loading);
 
 module.exports = Loadable;

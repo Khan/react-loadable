@@ -168,13 +168,13 @@ function createLoadableComponent(loadFn, options) {
     }
 
     _loadModule() {
-      if (this.context.loadable && Array.isArray(opts.modules)) {
-        opts.modules.forEach(moduleName => {
-          this.context.loadable.report(moduleName);
-        });
-      }
-
       if (!res.loading) {
+        if (this.context.loadable && Array.isArray(opts.modules)) {
+          opts.modules.forEach(moduleName => {
+            this.context.loadable.report(moduleName);
+          });
+        }
+
         return;
       }
 

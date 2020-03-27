@@ -298,7 +298,7 @@ describe('preloadReady', () => {
     expect(component.toJSON()).toMatchSnapshot();
   });
 
-  test('delay with 0', () => {
+  test('delay with 0', async () => {
     let LoadableMyComponent = Loadable({
       loader: createLoader(300, () => MyComponent),
       loading: MyLoadingComponent,
@@ -307,7 +307,9 @@ describe('preloadReady', () => {
     });
   
     let loadingComponent = renderer.create(<LoadableMyComponent prop="foo" />);
-  
+
+    await waitFor(0);
+      
     expect(loadingComponent.toJSON()).toMatchSnapshot(); // loading
   });
 });

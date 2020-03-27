@@ -163,8 +163,15 @@ function createLoadableComponent(loadFn, options) {
     }
 
     componentWillMount() {
-      this._mounted = true;
       this._loadModule();
+    }
+
+    componentDidMount() {
+      this._mounted = true;
+    }
+
+    componentWillUnmount() {
+      this._mounted = false;
     }
 
     _loadModule() {
@@ -179,18 +186,18 @@ function createLoadableComponent(loadFn, options) {
       }
 
       if (typeof opts.delay === "number") {
-        if (opts.delay === 0) {
-          this.setState({ pastDelay: true });
-        } else {
-          this._delay = setTimeout(() => {
+        this._delay = setTimeout(() => {
+          if (this._mounted) {
             this.setState({ pastDelay: true });
-          }, opts.delay);
-        }
+          }
+        }, opts.delay);
       }
 
       if (typeof opts.timeout === "number") {
         this._timeout = setTimeout(() => {
-          this.setState({ timedOut: true });
+          if (this._mounted) {
+            this.setState({ timedOut: true });
+          }
         }, opts.timeout);
       }
 
@@ -228,6 +235,9 @@ function createLoadableComponent(loadFn, options) {
     }
 
     retry = () => {
+      if (!this._mounted) {
+        return;
+      }
       this.setState({ error: null, loading: true, timedOut: false });
       res = loadFn(opts.loader);
       this._loadModule();

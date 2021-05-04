@@ -7,8 +7,6 @@
   "license": "MIT",
   "repository": "thejameskyle/react-loadable",
   "files": [
-    "babel.js",
-    "webpack.js",
     "lib/**"
   ],
   "scripts": {

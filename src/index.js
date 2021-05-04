@@ -7,12 +7,12 @@ const READY_INITIALIZERS = [];
 const CONSTRUCTED_INITIALIZERS = [];
 const CONSTRUCTED_RESULTS = [];
 
-function isWebpackReady(getModuleIds) {
+function isWebpackReady(moduleIds) {
   if (typeof __webpack_modules__ !== "object") {
     return false;
   }
 
-  return getModuleIds().every(moduleId => {
+  return moduleIds.every(moduleId => {
     return (
       typeof moduleId !== "undefined" &&
       typeof __webpack_modules__[moduleId] !== "undefined"
@@ -111,7 +111,6 @@ function createLoadableComponent(loadFn, options) {
       delay: 200,
       timeout: null,
       render: render,
-      webpack: null,
       modules: null
     },
     options
@@ -128,9 +127,9 @@ function createLoadableComponent(loadFn, options) {
 
   ALL_INITIALIZERS.push(init);
 
-  if (typeof opts.webpack === "function") {
+  if (Array.isArray(opts.modules)) {
     READY_INITIALIZERS.push(() => {
-      if (isWebpackReady(opts.webpack)) {
+      if (isWebpackReady(opts.modules)) {
         return init();
       }
     });

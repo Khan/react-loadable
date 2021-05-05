@@ -260,7 +260,7 @@ describe('preloadReady', () => {
     let LoadableMyComponent = Loadable({
       loader: createLoader(200, () => MyComponent),
       loading: MyLoadingComponent,
-      webpack: () => [1],
+      modules: [1],
     });
 
     await Loadable.preloadReady();
@@ -274,7 +274,7 @@ describe('preloadReady', () => {
     let LoadableMyComponent = Loadable({
       loader: createLoader(200, () => MyComponent),
       loading: MyLoadingComponent,
-      webpack: () => [1, 2],
+      modules: [1, 2],
     });
 
     await Loadable.preloadReady();
@@ -288,7 +288,7 @@ describe('preloadReady', () => {
     let LoadableMyComponent = Loadable({
       loader: createLoader(200, () => MyComponent),
       loading: MyLoadingComponent,
-      webpack: () => [1, 42],
+      modules: [1, 42],
     });
 
     await Loadable.preloadReady();
@@ -305,11 +305,11 @@ describe('preloadReady', () => {
       delay: 0,
       timeout: 200,
     });
-  
+
     let loadingComponent = renderer.create(<LoadableMyComponent prop="foo" />);
 
     await waitFor(0);
-      
+
     expect(loadingComponent.toJSON()).toMatchSnapshot(); // loading
   });
 });
